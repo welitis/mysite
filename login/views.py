@@ -1,15 +1,34 @@
+from captcha.models import CaptchaStore
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from . import models
 # Create your views here.
 from django.urls import reverse
-from .forms import UserForm, RegisterForm
+from .forms import *
 from hashlib import sha256
 import datetime
 from django.conf import settings
 from django.utils import timezone
+from captcha.models import CaptchaStore
+from captcha.helpers import captcha_image_url
 # import pytz
 
 # utc = pytz.utc
+
+
+def ajax_val(request):
+    if request.is_ajax():
+        response = request.GET.get('response', '')
+        key = request.GET.get('hashkey', '')
+        cs = CaptchaStore.objects.filter(response=response, hashkey=key)
+        if cs:
+            json_data = {'status': 1}
+        else:
+            json_data = {'status': 0}
+        return JsonResponse(json_data)
+    else:
+        json_data = {'status':0}
+        return JsonResponse(json_data)
 
 
 def hash_code(string, salt='python'):
@@ -92,6 +111,8 @@ def login(request):
         return render(request, 'login/login.html', locals())
 
     login_form = UserForm()
+    hash_key = CaptchaStore.generate_key()
+    image_url = captcha_image_url(hash_key)
     return render(request, 'login/login.html', locals())
 
 
@@ -164,3 +185,13 @@ def user_confirm(request):
         confirm.delete()
         message = "感谢确认，请使用账户登录"
         return render(request, 'login/confirm.html', locals())
+
+
+def captcha_view(request):
+    if request.POST:
+        form = TestCaptcha(request.POST)
+        if form.is_valid():
+            human = True
+    else:
+        form = TestCaptcha()
+    return render(request, 'captcha.html', locals())
