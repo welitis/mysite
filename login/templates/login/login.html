@@ -49,8 +49,8 @@
         <img src="{{ image_url }}" alt="captcha" class="captcha" id="captcha_image" style="float:right;margin-top:27px;">
         <div class="form-group  has-feedback" style="width:70%;">
   <label class="control-label" for="id_captcha_1">验证码:</label>
-  <input type="text" class="form-control user_captcha" id="id_captcha_1" aria-describedby="inputSuccess2Status" >
-  <input type="hidden" id="id_captcha_0" value="{{ hash_key }}" required>
+  <input type="text" class="form-control user_captcha" id="id_captcha_1" aria-describedby="inputSuccess2Status" name="captcha_1" spellcheck="false">
+  <input type="hidden" name="captcha_0" id="id_captcha_0" value="{{ hash_key }}" required>
   <span class="glyphicon  form-control-feedback" aria-hidden="true" style="top:30px;"></span>
   <span id="inputSuccess2Status" class="sr-only">(success)</span>
 
@@ -60,7 +60,7 @@
 
     </form>
 
-<wb:share-button addition="simple" type="icon" ralateUid="3622326474" default_text="Mr.Wang%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%20--%20%E4%B8%80%E4%B8%AA%E7%95%8C%E9%9D%A2%E7%AE%80%E6%B4%81%E6%B8%85%E7%88%BD%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99"></wb:share-button>
+<!--<wb:share-button addition="simple" type="icon" ralateUid="3622326474" default_text="Mr.Wang%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%20--%20%E4%B8%80%E4%B8%AA%E7%95%8C%E9%9D%A2%E7%AE%80%E6%B4%81%E6%B8%85%E7%88%BD%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99"></wb:share-button>-->
 {% endblock %}
 
 {% block js %}
@@ -75,7 +75,8 @@
         });
         // ajax动态验证
         $('#id_captcha_1').blur(function(){
-            $('#captcha_status').html('');
+            $('[style="width:70%;"]').removeClass('has-success has-error');
+            $('[aria-hidden="true"]').removeClass('glyphicon-ok glyphicon-remove');
             json_data={
                 'response':$('#id_captcha_1').val(), //获取输入框和隐藏字段id_captcha_0的值
                 'hashkey': $('#id_captcha_0').val()
@@ -89,6 +90,11 @@
                     $('[aria-hidden="true"]').addClass('glyphicon-remove');
                 }
             })
+        })
+
+        $('[type="reset"]').click(function(){
+            $('[style="width:70%;"]').removeClass('has-success has-error');
+            $('[aria-hidden="true"]').addClass('glyphicon-ok glyphicon-remove');
         })
 
     })

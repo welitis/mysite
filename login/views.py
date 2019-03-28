@@ -82,11 +82,14 @@ def index(request):
 #     return render(request, 'login/login.html')
 
 def login(request):
+    hash_key = CaptchaStore.generate_key()
+    image_url = captcha_image_url(hash_key)
     if request.session.get('is_login', ''):
         return redirect(reverse('login:index'))
     if request.method == "POST":
         login_form = UserForm(request.POST)
         message = "请检查填写内容"
+        print(login_form.is_valid())
         # 判断登录信息是否合法
         if login_form.is_valid():
             # 获取form对象的表单信息
@@ -111,12 +114,12 @@ def login(request):
         return render(request, 'login/login.html', locals())
 
     login_form = UserForm()
-    hash_key = CaptchaStore.generate_key()
-    image_url = captcha_image_url(hash_key)
     return render(request, 'login/login.html', locals())
 
 
 def register(request):
+    hash_key = CaptchaStore.generate_key()
+    image_url = captcha_image_url(hash_key)
     if request.session.get('is_login', ''):
         return redirect(reverse('login:index'))
     if request.method == "POST":

@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'example'
+SECRET_KEY = 'zv7vj3w&0j^d*2hx*&t3jks8zd%mqze_lezlbgj*!6tj2!f--j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -29,13 +29,16 @@ ALLOWED_HOSTS = []
 
 # 邮件配置
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'example.qq.com'
+EMAIL_HOST = 'smtp.qq.com'
 EMAIL_PORT = 25
 EMAIL_HOST_USER = 'example@qq.com'
-EMAIL_HOST_PASSWORD = 'authorization code'
+EMAIL_HOST_PASSWORD = '邮件验证码'
 
 # 注册有效期天数
 CONFIRM_DAYS = 7
+
+# 设置验证码大小
+CAPTCHA_IMAGE_SIZE = (80,40)
 
 # Application definition
 

@@ -32,10 +32,14 @@
         {{ register_form.sex.label_tag }}
         {{ register_form.sex }}
     </div>
-    <div class="form-group">
-        {{ register_form.captcha.errors }}
-        {{ register_form.captcha.label_tag }}
-        {{ register_form.captcha }}
+    <img src="{{ image_url }}" alt="captcha" class="captcha" id="captcha_image" style="float:right;margin-top:27px;">
+        <div class="form-group  has-feedback" style="width:70%;">
+  <label class="control-label" for="id_captcha_1">验证码:</label>
+  <input type="text" name="captcha_1" class="form-control user_captcha" id="id_captcha_1" aria-describedby="inputSuccess2Status" >
+  <input type="hidden" name="captcha_0" id="id_captcha_0" value="{{ hash_key }}" required>
+  <span class="glyphicon  form-control-feedback" aria-hidden="true" style="top:30px;"></span>
+  <span id="inputSuccess2Status" class="sr-only">(success)</span>
+
     </div>
         <input type="reset" class="btn btn-default pull-left" value="重置">
         <input type="submit" class="btn btn-primary pull-right" value="登录">
@@ -51,7 +55,34 @@
                 $('.captcha').attr('src', result['image_url']);
                 $('#id_captcha_0').val(result['key'])
             })
+        });
+
+        // ajax动态验证
+        $('#id_captcha_1').blur(function(){
+            // 删除已存在的成功或失败类
+            $('[style="width:70%;"]').removeClass('has-success has-error');
+            $('[aria-hidden="true"]').removeClass('glyphicon-ok glyphicon-remove');
+            json_data={
+                'response':$('#id_captcha_1').val(), //获取输入框和隐藏字段id_captcha_0的值
+                'hashkey': $('#id_captcha_0').val()
+            };
+            $.getJSON('{% url "login:ajax_val" %}', json_data, function(data){
+                if(data['status']){ // 根据状态判断是否验证成功
+                    $('[style="width:70%;"]').addClass('has-success');
+                    $('[aria-hidden="true"]').addClass('glyphicon-ok');
+                    }else{
+                    $('[style="width:70%;"]').addClass('has-error');
+                    $('[aria-hidden="true"]').addClass('glyphicon-remove');
+                }
+            })
+        })
+
+        $('[type="reset"]').click(function(){
+            // 重置清除验证框样式
+            $('[style="width:70%;"]').removeClass('has-success has-error');
+            $('[aria-hidden="true"]').removeClass('glyphicon-ok glyphicon-remove');
         })
     })
 </script>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"大家好，欢迎分享Mr.Wang的主页","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"6","bdPos":"left","bdTop":"120"},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"分享到：我的家","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
 {% endblock %}
